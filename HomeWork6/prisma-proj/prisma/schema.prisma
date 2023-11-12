@@ -1,0 +1,61 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Client {
+  id        Int      @id @default(autoincrement())
+  first_name     String
+  middle_name     String?
+  last_name     String
+  phone String?
+  club_cards ClubCard[]
+  locker Locker?
+}
+
+model Locker{
+  id        Int      @id @default(autoincrement())
+  code Int @unique
+  client   Client    @relation(fields: [client_id], references: [id])
+  client_id Int @unique
+}
+
+model ClubCard {
+  id        Int      @id @default(autoincrement())
+  valid_until DateTime
+  client   Client    @relation(fields: [client_id], references: [id])
+  client_id Int
+  visit_mode VisitMode @relation(fields: [visit_mode_id], references: [id])
+  visit_mode_id Int
+  created_at DateTime @default(now())
+  services_in_club_cards ServiceInClubCard[]
+}
+
+model VisitMode {
+  id        Int      @id @default(autoincrement())
+  name     String
+  price Float
+  club_cards ClubCard[]
+}
+
+model Service {
+  id        Int      @id @default(autoincrement())
+  name     String
+  description String?
+  services_in_club_cards ServiceInClubCard[]
+}
+
+model ServiceInClubCard {
+  id        Int      @id @default(autoincrement())
+  service Service @relation(fields: [service_id], references: [id])
+  service_id Int
+  club_card ClubCard @relation(fields: [club_card_id], references: [id])
+  club_card_id Int
+}
