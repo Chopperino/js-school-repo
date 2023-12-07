@@ -15,7 +15,7 @@ class CustomerOrdersService{
                 totalCost += (product.Price * products[j].amount);
             }
             grandTotalCost += totalCost + orders[i].deliveryCost;
-            orders[i].totalCost = totalCost;
+            orders[i].totalCost = totalCost + orders[i].deliveryCost;
         }
         return [orders, grandTotalCost];
     }
